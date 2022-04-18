@@ -1,0 +1,5 @@
+export { default as Beranda } from './Beranda'
+export { default as Penyakit } from './Penyakit'
+export { default as Prediksi } from './Prediksi'
+export { default as Riwayat } from './Riwayat'
+export { default as Tentang } from './Tentang'
