@@ -23,13 +23,13 @@ const Footer = () => {
         <h2 className="pb-[1.125rem] text-[1.125rem] font-semibold lg:pb-[2.25rem] lg:text-[2rem]">
           Produk
         </h2>
-        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem]">
+        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem] hover:underline">
           <Link to="/Prediksi">Prediksi</Link>
         </p>
-        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem]">
+        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem] hover:underline">
           <Link to="/Riwayat">Riwayat</Link>
         </p>
-        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem]">
+        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem] hover:underline">
           <Link to="/Penyakit">Penyakit</Link>
         </p>
       </div>
@@ -39,7 +39,7 @@ const Footer = () => {
         <h2 className="pb-[1.125rem] text-[1.125rem] font-semibold lg:pb-[2.25rem] lg:text-[2rem]">
           Tentang Kami
         </h2>
-        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem]">
+        <p className="pb-[1.125rem] text-[1rem] lg:pb-[2.25rem] lg:text-[1.5rem] hover:underline">
           <Link to="/Tentang">Tentang</Link>
         </p>
       </div>

@@ -6,13 +6,13 @@ import { faBars, faX } from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const NavItems = ["Beranda", "Penyakit", "Prediksi", "Riwayat", "Tentang"];
+  const NavItems = ["Beranda", "Prediksi", "Riwayat", "Penyakit", "Tentang"];
 
   return (
     <>
-      <nav className="fixed flex w-full flex-wrap items-center justify-between py-[0.8rem] px-[1.75rem] backdrop-blur-sm lg:py-[1.125rem] lg:px-[9.75rem]">
+      <nav className="fixed flex w-full flex-wrap items-center justify-between py-[0.8rem] px-[1.75rem] backdrop-blur-sm lg:py-[1.125rem] lg:px-[9.75rem] z-10">
         <div className="container flex flex-wrap items-center justify-between">
-          <div className="relative flex w-full items-center justify-between lg:block lg:w-auto lg:justify-start">
+          <div className="flex w-full items-center justify-between lg:block lg:w-auto lg:justify-start">
             {/* LOGO */}
             <Link to="/">
               <img
@@ -48,6 +48,7 @@ const Navbar = () => {
                   <Link
                     to={item === "Beranda" ? "/" : `/${item}`}
                     className="text-[1.125rem] font-normal transition duration-300  ease-in-out hover:text-turquoise lg:text-[1.5rem]"
+                    onClick={() => setIsOpen(false)}
                   >
                     {item}
                   </Link>
