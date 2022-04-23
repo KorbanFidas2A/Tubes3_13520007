@@ -62,8 +62,6 @@ const Prediksi = () => {
     }
   };
 
-  const warningMessage = () => {};
-
   return (
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
       <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
@@ -144,12 +142,13 @@ const Prediksi = () => {
             </select>
           </div>
 
-          <Button className={`mb-[1rem]`} onClick={handleSubmit}>
+          <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
             Lihat Hasil
           </Button>
           <p
             className={
-              `text-[0.667rem] lg:text-[1rem] font-medium text-red ` + (isAllFilled ? `hidden` : `block`)
+              `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
+              (isAllFilled ? `hidden` : `block`)
             }
           >
             *Tidak boleh ada yang kosong
