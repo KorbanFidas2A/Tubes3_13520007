@@ -102,3 +102,19 @@ function buildLast(pattern) {
     return last;
 }
 
+// count how many different char
+function hammingDistance(text1, text2) {
+    if (text1.length !== text2.length) {
+       return 0;
+    }
+
+    let dist = 0;
+    
+    for (let i = 0; i < text1.length; i++) {
+       if (text1[i] !== text2[i]) {
+          dist++;
+       };
+    };
+    
+    return dist;
+ };
