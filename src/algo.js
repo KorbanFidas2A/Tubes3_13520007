@@ -7,6 +7,7 @@ console.log(result)
 
 let toMatch = "GCCCT";
 
+// KMP algorithm
 function kmpMatch(text, pattern) {
     let n = text.length;
     let m = pattern.length;
@@ -23,17 +24,15 @@ function kmpMatch(text, pattern) {
             }
             i++;
             j++;
-        } 
-        else if (j > 0) {
+        } else if (j > 0) {
             j = fail[j-1];
-        } 
-        else {
+        } else {
             i++;
         }
         return -1;
     }
 }
-
+// KMP helper func
 function computeFail(pattern) {
     const fail = new Array(pattern.length);
     fail[0] = 0;
@@ -47,15 +46,59 @@ function computeFail(pattern) {
             fail[i] = j + 1;
             i++;
             j++;
-        }
-        else if (j > 0) {
+        } else if (j > 0) {
             j = fail[j-1];
-        }
-        else {
+        } else {
             fail[i] = 0;
             i++;
         }
     }
     return fail;
+}
+
+// Boyer-Moore algorithm
+function bmMatch(text, pattern) {
+    let n = text.length;
+    let m = pattern.length;
+
+    const fail = buildLast(pattern);
+
+    let i = m-1;
+    if (i > n-1) {
+        return -1;
+    }
+
+    let j = m-1;
+
+    do {
+        if (pattern.charAt(j) == text.charAt(i)) {
+            if (j == 0) {
+                return i;
+            } else {
+                i--;
+                j--;
+            }
+        } else {
+            let lo = last[text.charAt(i)];
+            i = i + m - Math.min(j, 1+lo);
+            j = m - 1;
+        } 
+    } while (i <= n-1);
+
+    return -1;
+}
+
+function buildLast(pattern) {
+    const last = new Array(128);
+
+    for (let i = 0; i < 128; i++) {
+        last[i] = -1;
+    }
+
+    for (let i = 0; i < pattern.length; i++) {
+        last[pattern.charAt(i)] = i;
+    }
+
+    return last;
 }
 
