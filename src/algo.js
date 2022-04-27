@@ -6,7 +6,8 @@ let result = valid.test(input);
 console.log(result)
 
 let toMatch = "GCCCT";
-
+console.log(kmpMatch(input, toMatch))
+console.log(bmMatch(input, toMatch))
 // KMP algorithm
 function kmpMatch(text, pattern) {
     let n = text.length;
@@ -28,9 +29,9 @@ function kmpMatch(text, pattern) {
             j = fail[j-1];
         } else {
             i++;
-        }
-        return -1;
+        } 
     }
+    return -1;
 }
 // KMP helper func
 function computeFail(pattern) {
@@ -58,18 +59,18 @@ function computeFail(pattern) {
 
 // Boyer-Moore algorithm
 function bmMatch(text, pattern) {
+    const last = buildLast(pattern);
+
     let n = text.length;
     let m = pattern.length;
-
-    const fail = buildLast(pattern);
-
     let i = m-1;
+
     if (i > n-1) {
         return -1;
     }
 
     let j = m-1;
-
+    console.log("keluar")
     do {
         if (pattern.charAt(j) == text.charAt(i)) {
             if (j == 0) {
