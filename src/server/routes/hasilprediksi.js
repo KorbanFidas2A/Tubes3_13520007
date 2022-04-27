@@ -25,20 +25,26 @@ router.route('/add').post((req, res) => {
         rantai = doc[0].rantaiDNA
         //result
         var checking_result = algo.kmpMatch(dnaPasien, rantai);
-    
+        var similarityLevel;
         var result;
         if(checking_result != -1){
             result = true;
+            similarityLevel = 100
         }else{
             result = false;
+            similarityLevel = algo.similarityTest(dnaPasien, rantai)
+            if(similarityLevel >= 80){
+                result = true;
+            }
         }
-    
         const statusTerprediksi = Boolean(result);
+        const tingkatKemiripan = similarityLevel;
     
         const newHasilPrediksi = new HasilPrediksi({
             tanggalPrediksi,
             namaPasien,
             penyakitPrediksi,
+            tingkatKemiripan,
             statusTerprediksi
         });
     
