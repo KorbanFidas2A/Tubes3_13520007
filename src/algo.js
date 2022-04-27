@@ -6,9 +6,12 @@ let result = valid.test(input);
 console.log(result)
 
 let toMatch = "GCCCT";
+
 console.log(kmpMatch(input, toMatch))
 console.log(bmMatch(input, toMatch))
-// KMP algorithm
+
+// KMP algorithm, return index di mana pattern ditemukan jika pattern
+// ditemukan pada text, return -1 jika pattern tidak ditemukan
 function kmpMatch(text, pattern) {
     let n = text.length;
     let m = pattern.length;
@@ -31,9 +34,11 @@ function kmpMatch(text, pattern) {
             i++;
         } 
     }
+
     return -1;
 }
-// KMP helper func
+
+// KMP border function
 function computeFail(pattern) {
     const fail = new Array(pattern.length);
     fail[0] = 0;
@@ -54,10 +59,12 @@ function computeFail(pattern) {
             i++;
         }
     }
+
     return fail;
 }
 
-// Boyer-Moore algorithm
+// Boyer-Moore algorithm, return index di mana pattern ditemukan jika
+// pattern ditemukan pada text, return -1 jika pattern tidak ditemukan
 function bmMatch(text, pattern) {
     const last = buildLast(pattern);
 
@@ -70,7 +77,7 @@ function bmMatch(text, pattern) {
     }
 
     let j = m-1;
-    console.log("keluar")
+
     do {
         if (pattern.charAt(j) == text.charAt(i)) {
             if (j == 0) {
@@ -80,8 +87,8 @@ function bmMatch(text, pattern) {
                 j--;
             }
         } else {
-            let lo = last[text.charAt(i)];
-            i = i + m - Math.min(j, 1+lo);
+            let lastOccur = last[(text.charAt(i)).charCodeAt()];
+            i = i + m - Math.min(j, 1 + lastOccur);
             j = m - 1;
         } 
     } while (i <= n-1);
@@ -89,6 +96,7 @@ function bmMatch(text, pattern) {
     return -1;
 }
 
+// BM helper function untuk menyimpan index last occurence dari karakter
 function buildLast(pattern) {
     const last = new Array(128);
 
@@ -97,7 +105,7 @@ function buildLast(pattern) {
     }
 
     for (let i = 0; i < pattern.length; i++) {
-        last[pattern.charAt(i)] = i;
+        last[(pattern.charAt(i)).charCodeAt()] = i;
     }
 
     return last;

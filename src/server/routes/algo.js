@@ -1,13 +1,5 @@
-let input = "AAAAAGGGCCCTTT";
-let valid = /^[AGCT]*$/;
-
-let result = valid.test(input);
-
-console.log(result)
-
-let toMatch = "GCCCT";
-
-// KMP algorithm
+// KMP algorithm, return index di mana pattern ditemukan jika pattern
+// ditemukan pada text, return -1 jika pattern tidak ditemukan
 function kmpMatch(text, pattern) {
     let n = text.length;
     let m = pattern.length;
@@ -28,11 +20,13 @@ function kmpMatch(text, pattern) {
             j = fail[j-1];
         } else {
             i++;
-        }
-        return -1;
+        } 
     }
+
+    return -1;
 }
-// KMP helper func
+
+// KMP border function
 function computeFail(pattern) {
     const fail = new Array(pattern.length);
     fail[0] = 0;
@@ -53,17 +47,19 @@ function computeFail(pattern) {
             i++;
         }
     }
+
     return fail;
 }
 
-// Boyer-Moore algorithm
+// Boyer-Moore algorithm, return index di mana pattern ditemukan jika
+// pattern ditemukan pada text, return -1 jika pattern tidak ditemukan
 function bmMatch(text, pattern) {
+    const last = buildLast(pattern);
+
     let n = text.length;
     let m = pattern.length;
-
-    const fail = buildLast(pattern);
-
     let i = m-1;
+
     if (i > n-1) {
         return -1;
     }
@@ -79,8 +75,8 @@ function bmMatch(text, pattern) {
                 j--;
             }
         } else {
-            let lo = last[text.charAt(i)];
-            i = i + m - Math.min(j, 1+lo);
+            let lastOccur = last[(text.charAt(i)).charCodeAt()];
+            i = i + m - Math.min(j, 1 + lastOccur);
             j = m - 1;
         } 
     } while (i <= n-1);
@@ -88,6 +84,7 @@ function bmMatch(text, pattern) {
     return -1;
 }
 
+// BM helper function untuk menyimpan index last occurence dari karakter
 function buildLast(pattern) {
     const last = new Array(128);
 
@@ -96,25 +93,8 @@ function buildLast(pattern) {
     }
 
     for (let i = 0; i < pattern.length; i++) {
-        last[pattern.charAt(i)] = i;
+        last[(pattern.charAt(i)).charCodeAt()] = i;
     }
 
     return last;
 }
-
-// count how many different char
-function hammingDistance(text1, text2) {
-    if (text1.length !== text2.length) {
-       return 0;
-    }
-
-    let dist = 0;
-    
-    for (let i = 0; i < text1.length; i++) {
-       if (text1[i] !== text2[i]) {
-          dist++;
-       };
-    };
-    
-    return dist;
- };
