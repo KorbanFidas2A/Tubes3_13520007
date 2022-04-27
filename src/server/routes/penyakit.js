@@ -18,7 +18,7 @@ router.route('/add').post((req, res) => {
 
     newPenyakit.save()
         .then(() => res.json('Penyakit added!'))
-        .catch(err => res.status(400).json('Error: ' + err));
+        .catch(err => res.status(400).json('*Penyakit sudah terdaftar'));
 })
 
 router.route('/delete/:namaPenyakit').delete((req, res) =>{
