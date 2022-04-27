@@ -1,5 +1,6 @@
 const router = require('express').Router()
 let HasilPrediksi = require('../models/hasilprediksi.model')
+import {kmpMatch} from './algo.js'
 
 router.route('/').get((req, res) => {
     HasilPrediksi.find()
@@ -8,15 +9,20 @@ router.route('/').get((req, res) => {
 })
 
 router.route('/add').post((req, res) => {
-    const tanggalPrediksi = Date.parse(req.body.tanggalPrediksi)
+    var today = new Date()
+    const tanggalPrediksi = Date(today)
+
+    //get request from frontend
     const namaPasien = req.body.namaPasien
     const penyakitPrediksi = req.body.penyakitPrediksi
-
-
     
+    //get string from database
 
-    //pengecekan untuk hasil
-    var checking_result;
+
+
+    //result
+    var checking_result = kmpMatch();
+
     var result;
     if(checking_result != -1){
         result = true;
@@ -44,5 +50,6 @@ router.route('/delete/:id').delete((req, res) =>{
     .then(() => res.json('Exercise deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 })
+
 
 module.exports = router;
