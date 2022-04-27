@@ -18,6 +18,7 @@ const Prediksi = () => {
   const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
+  const penyakitInputRef = useRef(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
   const [error, setError] = useState([]);
@@ -55,28 +56,32 @@ const Prediksi = () => {
       dnaPasien: DNA,
       penyakitPrediksi: penyakitForm,
     };
-    console.log(data);
     axios.post(url + "hasilprediksi/add", data)
     .then(res => {
       axios.get(url + "hasilprediksi/")
       .then(res => {
         const data = res.data;
+        console.log(data[data.length - 1]);
         setNamaHasil(data[data.length - 1].namaPasien);
         setTanggal(data[data.length - 1].tanggalPrediksi);
         setPenyakitHasil(data[data.length - 1].penyakitPrediksi);
         setHasilPrediksi(data[data.length - 1].statusTerprediksi);
-        if (hasilPrediksi) {
-          setHasil("POSITIF");
-        } else {
-          setHasil("NEGATIF");
-        }
+        (data[data.length - 1].statusTerprediksi ? setHasil("POSITIF"): setHasil("NEGATIF"));
       })
+      .catch(err => {
+        console.log(err);
+      });
     })
-
+    .catch(err => {
+      console.log(err);
+    });
+    
     setNamaForm("");
     setPenyakitForm(listPenyakit[0]);
     setDNA(null);
     setFilename("Tidak ada berkas yang dipilih");
+    fileInputRef.current.value = null;
+    penyakitInputRef.current.value = null;
   };
 
   const getFormattedDate = (dateStr) => {
@@ -145,6 +150,7 @@ const Prediksi = () => {
             </p>
             <select
               name="penyakit"
+              ref={penyakitInputRef}
               className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.688rem] text-[0.688rem] text-darkgrey lg:px-[1.5rem] lg:py-[1rem] lg:text-[1rem]"
               onChange={(e) => setPenyakitForm(e.target.value)}
             >
@@ -193,7 +199,7 @@ const Prediksi = () => {
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>
-                {getFormattedDate(tanggal)}
+                {tanggal === "---" ? "---" : getFormattedDate(tanggal)}
               </i>
             </p>
           </div>
@@ -209,7 +215,7 @@ const Prediksi = () => {
             <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
               Hasil
             </p>
-            <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
+            <p className={`basis-1/2 text-[1rem] lg:text-[1.5rem] ` + (hasil === "---" ? "text-darkgrey" : "text-red")}>
               <i>
                 {hasil}
               </i>

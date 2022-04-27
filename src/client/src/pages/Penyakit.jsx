@@ -31,8 +31,8 @@ const Penyakit = () => {
   }, []);
 
   const deletePenyakit = (namaPenyakit) => {
-    // axios.delete(url + "penyakit/" + namaPenyakit);
-    // setPenyakit(penyakit.filter(penyakit => penyakit.nama !== namaPenyakit));
+    axios.delete(url + "penyakit/delete/" + namaPenyakit);
+    setPenyakit(penyakit.filter(el => el.namaPenyakit !== namaPenyakit));
   };
 
   const handleUploadFileButton = (e) => {
@@ -57,12 +57,18 @@ const Penyakit = () => {
       namaPenyakit: name,
       rantaiDNA: DNA,
     };
-
-    axios.post(url + "penyakit/add", data);
-    setPenyakit([...penyakit, data]);
-    setName("");
-    setDNA(null);
-    setFilename("Tidak ada berkas yang dipilih");
+    axios.post(url + "penyakit/add", data)
+      .then(res => {
+        setPenyakit([...penyakit, data]);
+        setName("");
+        setDNA(null);
+        setFilename("Tidak ada berkas yang dipilih");
+        setIsFileValid(false);
+        fileInputRef.current.value = null;
+      })
+      .catch(err => {
+        // setError(err);
+      });
   };
 
   return (
@@ -164,7 +170,6 @@ const Penyakit = () => {
                     {item.namaPenyakit}
                   </p>
                   <a
-                    href="#"
                     className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]"
                     onClick={() => deletePenyakit(item.namaPenyakit)}
                   >

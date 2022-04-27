@@ -21,34 +21,31 @@ router.route('/add').post((req, res) => {
     //get string from database
     const filter = {namaPenyakit: penyakitPrediksi}
     var rantai = ""
-    Penyakit.find(filter).then(data => {
-        rantai = data[0].rantaiDNA
+    Penyakit.find(filter).then(doc => {
+        rantai = doc[0].rantaiDNA
+        //result
+        var checking_result = algo.kmpMatch(dnaPasien, rantai);
+    
+        var result;
+        if(checking_result != -1){
+            result = true;
+        }else{
+            result = false;
+        }
+    
+        const statusTerprediksi = Boolean(result);
+    
+        const newHasilPrediksi = new HasilPrediksi({
+            tanggalPrediksi,
+            namaPasien,
+            penyakitPrediksi,
+            statusTerprediksi
+        });
+    
+        newHasilPrediksi.save()
+            .then(() => res.json('Hasil Prediksi added!'))
+            .catch(err => res.status(400).json('Error: ' + err))
     })
-    console.log(rantai)
-
-    //result
-    var checking_result = algo.kmpMatch(dnaPasien, rantai);
-
-    var result;
-    if(checking_result != -1){
-        result = true;
-    }else{
-        result = false;
-    }
-
-
-    const statusTerprediksi = Boolean(result);
-
-    const newHasilPrediksi = new HasilPrediksi({
-        tanggalPrediksi,
-        namaPasien,
-        penyakitPrediksi,
-        statusTerprediksi
-    });
-
-    newHasilPrediksi.save()
-        .then(() => res.json('Hasil Prediksi added!'))
-        .catch(err => res.status(400).json('Error: ' + err))
 })
 
 router.route('/delete/:id').delete((req, res) =>{
@@ -56,6 +53,5 @@ router.route('/delete/:id').delete((req, res) =>{
     .then(() => res.json('Exercise deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 })
-
 
 module.exports = router;

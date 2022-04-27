@@ -10,13 +10,14 @@ const Riwayat = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const result = await axios(url + "hasilprediksi");
-      setRiwayat(result.data);
-      setLoading(false);
-    };
-    fetchData();
+    axios.get(url + "hasilprediksi")
+      .then(res => {
+        setRiwayat(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }, []);
 
   const getFormattedDate = (dateStr) => {
@@ -24,9 +25,9 @@ const Riwayat = () => {
     return date.toLocaleDateString();
   }
 
-  const deleteRiwayat = (idx) => {
-    // axios.delete(url + "hasilprediksi/" + idx);
-    // setPenyakit(penyakit.filter(penyakit => penyakit.id !== idx));
+  const deleteRiwayat = (id) => {
+    axios.delete(url + "hasilprediksi/delete/" + id);
+    setRiwayat(riwayat.filter(el => el._id !== id));
   }
 
   return (
@@ -71,6 +72,7 @@ const Riwayat = () => {
               {item}
             </p>
           ))}
+          <p className="text-[0.667rem] lg:text-[1.25rem] invisible">Hapus</p>
         </div>
         {/* TABLE DATA */}
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
@@ -89,7 +91,7 @@ const Riwayat = () => {
           ) : (
             riwayat.map((item, index) => (
               <div
-                key={index}
+                key={item._id}
                 className="flex flex-row gap-[1rem] px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
                 <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
@@ -105,9 +107,8 @@ const Riwayat = () => {
                   {item.hasilPrediksi ? "POSITIF" : "NEGATIF"}
                 </p>
                 <a
-                  href="#"
                   className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]"
-                  onClick={() => deleteRiwayat(index)}
+                  onClick={() => deleteRiwayat(item._id)}
                 >
                   Hapus
                 </a>
