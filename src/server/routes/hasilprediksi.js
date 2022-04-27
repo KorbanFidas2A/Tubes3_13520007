@@ -11,7 +11,21 @@ router.route('/add').post((req, res) => {
     const tanggalPrediksi = Date.parse(req.body.tanggalPrediksi)
     const namaPasien = req.body.namaPasien
     const penyakitPrediksi = req.body.penyakitPrediksi
-    const statusTerprediksi = Boolean(req.body.statusTerprediksi)
+
+
+    
+
+    //pengecekan untuk hasil
+    var checking_result;
+    var result;
+    if(checking_result != -1){
+        result = true;
+    }else{
+        result = false;
+    }
+
+
+    const statusTerprediksi = Boolean(result);
 
     const newHasilPrediksi = new HasilPrediksi({
         tanggalPrediksi,
