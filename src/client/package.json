@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build && cp _redirects build/_redirects",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
