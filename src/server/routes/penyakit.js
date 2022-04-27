@@ -21,8 +21,10 @@ router.route('/add').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
-router.route('/delete/:id').delete((req, res) =>{
-    Penyakit.findByIdAndDelete(req.params.id)
+router.route('/delete/:namaPenyakit').delete((req, res) =>{
+    const namaPenyakit = req.params.namaPenyakit
+
+    Penyakit.findOneAndDelete(namaPenyakit)
     .then(() => res.json('Penyakit deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 })
