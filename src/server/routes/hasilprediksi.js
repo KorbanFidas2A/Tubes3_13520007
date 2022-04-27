@@ -56,7 +56,7 @@ router.route('/add').post((req, res) => {
 
 router.route('/delete/:id').delete((req, res) =>{
     HasilPrediksi.findByIdAndDelete(req.params.id)
-    .then(() => res.json('Exercise deleted.'))
+    .then(() => res.json('Hasil Prediksi deleted.'))
     .catch(err => res.status(400).json('Error: ' + err));
 })
 
