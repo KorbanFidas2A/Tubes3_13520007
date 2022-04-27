@@ -1,31 +1,35 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../components";
 import { images } from "../constants";
+import axios from "axios";
 
 const Prediksi = () => {
-  const listPenyakit = [
-    "Pilih Penyakit/Kelainan",
-    "Kebotakan",
-    "Autisme",
-    "Down Syndrome",
-  ];
+  // const url = "https://tubes-cocokgen.herokuapp.com/";
+  const url = "http://localhost:5000/";
 
-  const [name, setName] = useState("Belum Terisi");
-  const [penyakit, setPenyakit] = useState(listPenyakit[0]);
+  const [namaHasil, setNamaHasil] = useState("---");
+  const [namaForm, setNamaForm] = useState("");
+  const [tanggal, setTanggal] = useState("---");
+  const [hasil, setHasil] = useState("---");
+  const [hasilPrediksi, setHasilPrediksi] = useState(false);
+  const [listPenyakit, setListPenyakit] = useState(["Pilih Penyakit/Kelainan"]);
+  const [penyakitForm, setPenyakitForm] = useState(listPenyakit[0]);
+  const [penyakitHasil, setPenyakitHasil] = useState("---");
+  const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
+  const [error, setError] = useState([]);
+  
+  useEffect(() => {
+    axios.get(url + "penyakit")
+    .then(res => {
+      const data = res.data;
+      setListPenyakit(listPenyakit.concat(data.map(item => item.namaPenyakit)));
+    })
+  }, []);
 
-  var DNA = "";
-  const today = new Date();
-
-  const date =
-    String(today.getDate()).padStart(2, "0") +
-    "-" +
-    String(today.getMonth() + 1).padStart(2, "0") +
-    "-" +
-    today.getFullYear();
 
   const handleUploadFileButton = (e) => {
     e.preventDefault();
@@ -34,33 +38,51 @@ const Prediksi = () => {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    setFilename(file.name);
 
+    setFilename(file.name);
     const reader = new FileReader();
     reader.onload = (e) => {
-      DNA = e.target.result;
-      fileValidation();
+      setDNA(e.target.result);
     };
     reader.readAsText(file);
   };
 
-  const fileValidation = () => {
-    const regex = /^[AGCT]*$/;
-    if (regex.test(DNA)) {
-      setIsFileValid(true);
-    } else {
-      setIsFileValid(false);
-    }
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    {
-      name === "Belum Terisi" || penyakit === listPenyakit[0] || !isFileValid
-        ? setIsAllFilled(false)
-        : setIsAllFilled(true);
-    }
+    const data = {
+      namaPasien: namaForm,
+      dnaPasien: DNA,
+      penyakitPrediksi: penyakitForm,
+    };
+    console.log(data);
+    axios.post(url + "hasilprediksi/add", data)
+    .then(res => {
+      axios.get(url + "hasilprediksi/")
+      .then(res => {
+        const data = res.data;
+        setNamaHasil(data[data.length - 1].namaPasien);
+        setTanggal(data[data.length - 1].tanggalPrediksi);
+        setPenyakitHasil(data[data.length - 1].penyakitPrediksi);
+        setHasilPrediksi(data[data.length - 1].statusTerprediksi);
+        if (hasilPrediksi) {
+          setHasil("POSITIF");
+        } else {
+          setHasil("NEGATIF");
+        }
+      })
+    })
+
+    setNamaForm("");
+    setPenyakitForm(listPenyakit[0]);
+    setDNA(null);
+    setFilename("Tidak ada berkas yang dipilih");
   };
+
+  const getFormattedDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString();
+  }
 
   return (
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
@@ -69,7 +91,7 @@ const Prediksi = () => {
         <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
           Tes DNA-mu!
         </h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           {/* NAME */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
@@ -80,7 +102,8 @@ const Prediksi = () => {
               name="nama"
               placeholder="Masukkan Nama"
               className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.688rem] text-[0.688rem] text-darkgrey lg:px-[1.5rem] lg:py-[1rem] lg:text-[1rem]"
-              onChange={(e) => setName(e.target.value)}
+              value={namaForm}
+              onChange={(e) => setNamaForm(e.target.value)}
             />
           </div>
 
@@ -90,12 +113,7 @@ const Prediksi = () => {
               Berkas DNA
             </p>
             <div
-              className={
-                `mb-[0.75rem] text-[0.668rem] font-medium text-darkgrey lg:mb-[1.125rem] lg:text-[1rem] ` +
-                (isFileValid || filename === "Tidak ada berkas yang dipilih"
-                  ? `text-darkgrey`
-                  : `text-red`)
-              }
+              className="mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] text-darkgrey"
             >
               <p>*Berkas yang diunggah harus berekstensi .txt</p>
               <p>*Berkas hanya berisi huruf A, C, G, dan/atau T</p>
@@ -128,7 +146,7 @@ const Prediksi = () => {
             <select
               name="penyakit"
               className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.688rem] text-[0.688rem] text-darkgrey lg:px-[1.5rem] lg:py-[1rem] lg:text-[1rem]"
-              onChange={(e) => setPenyakit(e.target.value)}
+              onChange={(e) => setPenyakitForm(e.target.value)}
             >
               {listPenyakit.map((item, index) => (
                 <option
@@ -142,17 +160,16 @@ const Prediksi = () => {
             </select>
           </div>
 
-          <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
+          <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} type="Submit">
             Lihat Hasil
           </Button>
-          <p
-            className={
-              `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
-              (isAllFilled ? `hidden` : `block`)
-            }
-          >
-            *Tidak boleh ada yang kosong
-          </p>
+          {error && error.length > 0 && (
+          <div className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
+            {error.map((err) => (
+              <p key={err}>"*"+{err}</p>
+            ))}
+          </div>
+        )}
         </form>
       </div>
 
@@ -167,7 +184,7 @@ const Prediksi = () => {
               Nama
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>{name === "" ? "Belum Terisi" : name}</i>
+              <i>{namaHasil}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
@@ -176,7 +193,7 @@ const Prediksi = () => {
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>
-                {name === "" || name === "Belum Terisi" ? "Belum Terisi" : date}
+                {getFormattedDate(tanggal)}
               </i>
             </p>
           </div>
@@ -185,7 +202,7 @@ const Prediksi = () => {
               Penyakit/Kelainan
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>{penyakit === listPenyakit[0] ? "Belum Terisi" : penyakit}</i>
+              <i>{penyakitHasil}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
@@ -194,9 +211,7 @@ const Prediksi = () => {
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>
-                {name === "" || name === "Belum Terisi"
-                  ? "Belum Terisi"
-                  : "Tekan tombol Lihat Hasil untuk melihat hasil"}
+                {hasil}
               </i>
             </p>
           </div>

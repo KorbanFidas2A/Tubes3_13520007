@@ -1,6 +1,9 @@
 // KMP algorithm, return index di mana pattern ditemukan jika pattern
 // ditemukan pada text, return -1 jika pattern tidak ditemukan
 function kmpMatch(text, pattern) {
+    console.log("masuk kmp")
+    console.log(text)
+    console.log(pattern)
     let n = text.length;
     let m = pattern.length;
 
@@ -98,3 +101,12 @@ function buildLast(pattern) {
 
     return last;
 }
+
+module.exports = {
+    bmMatch: function(text, pattern) {
+        return bmMatch(text, pattern);
+    },
+    kmpMatch: function(text, pattern) {
+        return kmpMatch(text, pattern);
+    }
+};

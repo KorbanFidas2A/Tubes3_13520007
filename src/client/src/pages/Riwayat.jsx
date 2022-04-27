@@ -1,40 +1,39 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { Button } from "../components";
+import axios from "axios";
 
 const Riwayat = () => {
+  // const url = "https://tubes-cocokgen.herokuapp.com/";
+  const url = "http://localhost:5000/";
   const tableHeader = ["Nama", "Tanggal Tes", "Penyakit/Kelainan", "Hasil"];
-  const listRiwayat = [
-    {
-      nama: "Dummy1",
-      tanggal: "12/12/2020",
-      penyakit: "Kebotakan",
-      hasil: "POSITIF",
-    },
-    {
-      nama: "Dummy2",
-      tanggal: "12/12/2020",
-      penyakit: "Autisme",
-      hasil: "NEGATIF",
-    },
-    {
-      nama: "Dummy Dummy Dummy Dummyy3",
-      tanggal: "12/12/2020",
-      penyakit: "Down Syndrome",
-      hasil: "POSITIF",
-    },
-    {
-      nama: "Dummy Dummy Dummy Dummyy444 44444",
-      tanggal: "12/12/2020",
-      penyakit: "Down Syndromeeee DOWN SYNDROMEEE",
-      hasil: "NEGATIF",
-    },
-  ];
+  const [riwayat, setRiwayat] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      const result = await axios(url + "hasilprediksi");
+      setRiwayat(result.data);
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  const getFormattedDate = (dateStr) => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString();
+  }
+
+  const deleteRiwayat = (idx) => {
+    // axios.delete(url + "hasilprediksi/" + idx);
+    // setPenyakit(penyakit.filter(penyakit => penyakit.id !== idx));
+  }
 
   return (
     <div
       className={
         `px-[1.75rem] pt-[4.5rem] lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem] ` +
-        (listRiwayat.length <= 2 ? `pb-[5rem]` : `pb-[3rem]`)
+        (riwayat.length <= 2 ? `pb-[5rem]` : `pb-[3rem]`)
       }
     >
       {/* HEADER AND SEARCH BAR */}
@@ -75,33 +74,46 @@ const Riwayat = () => {
         </div>
         {/* TABLE DATA */}
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
-          {listRiwayat.length === 0 ? (
+          {loading && (
+            <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
+              <p className="text-[0.667rem] lg:text-[1.25rem]">Memuat...</p>
+            </div>
+          )}
+          {!loading && (
+          riwayat.length === 0 ? (
             <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
               <p className="text-[0.667rem] lg:text-[1.25rem]">
                 Riwayat Tidak Ditemukan
               </p>
             </div>
           ) : (
-            listRiwayat.map((item, index) => (
+            riwayat.map((item, index) => (
               <div
                 key={index}
                 className="flex flex-row gap-[1rem] px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
                 <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
-                  {item.nama}
+                  {item.namaPasien}
                 </p>
                 <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
-                  {item.tanggal}
+                  {getFormattedDate(item.tanggalPrediksi)}
                 </p>
                 <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
-                  {item.penyakit}
+                  {item.penyakitPrediksi}
                 </p>
                 <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
-                  {item.hasil}
+                  {item.hasilPrediksi ? "POSITIF" : "NEGATIF"}
                 </p>
+                <a
+                  href="#"
+                  className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]"
+                  onClick={() => deleteRiwayat(index)}
+                >
+                  Hapus
+                </a>
               </div>
             ))
-          )}
+          ))}
           <div></div>
         </div>
       </div>

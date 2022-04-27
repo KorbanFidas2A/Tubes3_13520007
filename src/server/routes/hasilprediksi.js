@@ -1,7 +1,7 @@
 const router = require('express').Router()
 let HasilPrediksi = require('../models/hasilprediksi.model')
 let Penyakit = require('../models/penyakit.model')
-import {kmpMatch} from './algo.js'
+let algo = require('./algo')
 
 router.route('/').get((req, res) => {
     HasilPrediksi.find()
@@ -20,13 +20,14 @@ router.route('/add').post((req, res) => {
     
     //get string from database
     const filter = {namaPenyakit: penyakitPrediksi}
-    let doc = await Penyakit.findOne(filter)
-    var rantai = doc.rantaiDNA
-
-
+    var rantai = ""
+    Penyakit.find(filter).then(data => {
+        rantai = data[0].rantaiDNA
+    })
+    console.log(rantai)
 
     //result
-    var checking_result = kmpMatch(dnaPasien, rantai);
+    var checking_result = algo.kmpMatch(dnaPasien, rantai);
 
     var result;
     if(checking_result != -1){

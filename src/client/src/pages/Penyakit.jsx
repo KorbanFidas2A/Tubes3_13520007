@@ -1,16 +1,39 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "../components";
+import axios from "axios";
 
 const Penyakit = () => {
-  const penyakit = ["Kebotakan"];
+  // const url = "https://tubes-cocokgen.herokuapp.com/";
+  const url = "http://localhost:5000/";
 
+  const [penyakit, setPenyakit] = useState([]);
   const [name, setName] = useState("");
+  const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState([]);
 
-  var DNA = "";
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const result = await axios(url + "penyakit");
+        setPenyakit(result.data);
+        setLoading(false);
+      } catch (error) {
+        // setError(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const deletePenyakit = (namaPenyakit) => {
+    // axios.delete(url + "penyakit/" + namaPenyakit);
+    // setPenyakit(penyakit.filter(penyakit => penyakit.nama !== namaPenyakit));
+  };
 
   const handleUploadFileButton = (e) => {
     e.preventDefault();
@@ -19,32 +42,27 @@ const Penyakit = () => {
 
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
-    setFilename(file.name);
 
+    setFilename(file.name);
     const reader = new FileReader();
     reader.onload = (e) => {
-      DNA = e.target.result;
-      fileValidation();
+      setDNA(e.target.result);
     };
     reader.readAsText(file);
   };
 
-  const fileValidation = () => {
-    const regex = /^[AGCT]*$/;
-    if (regex.test(DNA)) {
-      setIsFileValid(true);
-    } else {
-      setIsFileValid(false);
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    {
-      name === "" || !isFileValid
-        ? setIsAllFilled(false)
-        : setIsAllFilled(true);
-    }
+    const data = {
+      namaPenyakit: name,
+      rantaiDNA: DNA,
+    };
+
+    axios.post(url + "penyakit/add", data);
+    setPenyakit([...penyakit, data]);
+    setName("");
+    setDNA(null);
+    setFilename("Tidak ada berkas yang dipilih");
   };
 
   return (
@@ -52,7 +70,7 @@ const Penyakit = () => {
       <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
         Tambahkan Jenis Penyakit/Kelainan
       </h1>
-      <form className="lg:mb-[4.5rem] mb-[3rem]">
+      <form className="mb-[3rem] lg:mb-[4.5rem]" onSubmit={handleSubmit}>
         <div className="flex flex-col lg:flex-row lg:gap-[7.5rem]">
           {/* NAMA PENYAKIT */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
@@ -62,6 +80,7 @@ const Penyakit = () => {
             <input
               type="text"
               name="namapenyakit"
+              value={name}
               placeholder="Masukkan Nama Penyakit/Kelainan"
               className="w-full rounded-[0.5rem] bg-lightgrey px-[1rem] py-[0.688rem] text-[0.688rem] text-darkgrey lg:px-[1.5rem] lg:py-[1rem] lg:text-[1rem]"
               onChange={(e) => setName(e.target.value)}
@@ -73,14 +92,7 @@ const Penyakit = () => {
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Berkas DNA
             </p>
-            <div
-              className={
-                `mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] ` +
-                (isFileValid || filename === "Tidak ada berkas yang dipilih"
-                  ? `text-darkgrey`
-                  : `text-red`)
-              }
-            >
+            <div className="mb-[0.75rem] text-[0.668rem] font-medium text-darkgrey lg:mb-[1.125rem] lg:text-[1rem]">
               <p>*Berkas yang diunggah harus berekstensi .txt</p>
               <p>*Berkas hanya berisi huruf A, C, G, dan/atau T</p>
               <p>*Tidak boleh ada enter, spasi, dan huruf kecil</p>
@@ -105,17 +117,19 @@ const Penyakit = () => {
           </div>
         </div>
 
-        <Button className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`} onClick={handleSubmit}>
+        <Button
+          className={`mb-[1rem] px-[2.25rem] lg:px-[3.625rem]`}
+          type="submit"
+        >
           Tambahkan
         </Button>
-        <p
-          className={
-            `text-[0.667rem] font-medium text-red lg:text-[1rem] ` +
-            (isAllFilled ? `hidden` : `block`)
-          }
-        >
-          *Tidak boleh ada yang kosong
-        </p>
+        {error && error.length > 0 && (
+          <div className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
+            {error.map((err) => (
+              <p key={err}>"*"+{err}</p>
+            ))}
+          </div>
+        )}
       </form>
 
       {/* TABLE */}
@@ -128,27 +142,37 @@ const Penyakit = () => {
         </div>
         {/* TABLE DATA */}
         <div className="flex flex-col divide-y-[1px] lg:divide-y-2">
-          {penyakit.length === 0 ? (
+          {loading && (
             <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
-              <p className="text-[0.667rem] lg:text-[1.25rem]">
-                Belum Ada Penyakit/Kelainan yang Terdaftar
-              </p>
+              <p className="text-[0.667rem] lg:text-[1.25rem]">Memuat...</p>
             </div>
-          ) : (
-            penyakit.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-row justify-between px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
-              >
+          )}
+          {!loading &&
+            (penyakit.length === 0 ? (
+              <div className="flex justify-center py-[0.25rem] lg:py-[1.25rem]">
                 <p className="text-[0.667rem] lg:text-[1.25rem]">
-                  {item}
-                </p>
-                <p className="text-[0.667rem] lg:text-[1.25rem] underline hover:cursor-pointer">
-                  Hapus
+                  Belum Ada Penyakit/Kelainan yang Terdaftar
                 </p>
               </div>
-            ))
-          )}
+            ) : (
+              penyakit.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex flex-row justify-between px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
+                >
+                  <p className="text-[0.667rem] lg:text-[1.25rem]">
+                    {item.namaPenyakit}
+                  </p>
+                  <a
+                    href="#"
+                    className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]"
+                    onClick={() => deletePenyakit(item.namaPenyakit)}
+                  >
+                    Hapus
+                  </a>
+                </div>
+              ))
+            ))}
           <div></div>
         </div>
       </div>
