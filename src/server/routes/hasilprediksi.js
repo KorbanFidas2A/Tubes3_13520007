@@ -54,20 +54,20 @@ router.route("/add").post((req, res) => {
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
 
-        const tanggal = new Date().then((tanggalPrediksi) => {
-          const newHasilPrediksi = new HasilPrediksi({
-            tanggalPrediksi,
-            namaPasien,
-            penyakitPrediksi,
-            tingkatKemiripan,
-            statusTerprediksi,
-          });
+        const tanggalPrediksi = new Date();
 
-          newHasilPrediksi
-            .save()
-            .then(() => res.json("Hasil Prediksi added!"))
-            .catch((err) => res.status(400).json("Error: " + err));
+        const newHasilPrediksi = new HasilPrediksi({
+          tanggalPrediksi,
+          namaPasien,
+          penyakitPrediksi,
+          tingkatKemiripan,
+          statusTerprediksi,
         });
+
+        newHasilPrediksi
+          .save()
+          .then(() => res.json("Hasil Prediksi added!"))
+          .catch((err) => res.status(400).json("Error: " + err));
       }
     });
   }
