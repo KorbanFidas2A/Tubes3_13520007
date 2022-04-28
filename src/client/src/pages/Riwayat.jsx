@@ -3,8 +3,10 @@ import { Button } from "../components";
 import axios from "axios";
 
 const Riwayat = () => {
-  // const url = "https://tubes-cocokgen.herokuapp.com/";
-  const url = "http://localhost:5000/";
+  // debugging purposes
+  // const url = "http://localhost:5000/";
+
+  const url = "https://tubes-cocokgen.herokuapp.com/";
   const tableHeader = ["Nama", "Tanggal Tes", "Penyakit/Kelainan", "Tingkat Kemiripan", "Hasil"];
   const [riwayat, setRiwayat] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,7 +69,7 @@ const Riwayat = () => {
           {tableHeader.map((item, index) => (
             <p
               key={index}
-              className={`flex items-center justify-start text-[0.667rem] font-medium lg:text-[1.5rem]` + (index === 0 || index === 3 ? ` basis-3/12 ` : ` basis-2/12 `)}
+              className={`flex items-center justify-start text-[0.667rem] font-medium lg:text-[1.5rem]` + (index === 0 || index === 2 ? ` basis-3/12 ` : ` basis-2/12 `)}
             >
               {item}
             </p>
@@ -100,10 +102,10 @@ const Riwayat = () => {
                 <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {getFormattedDate(item.tanggalPrediksi)}
                 </p>
-                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.penyakitPrediksi}
                 </p>
-                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.tingkatKemiripan}%
                 </p>
                 <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">

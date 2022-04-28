@@ -3,16 +3,16 @@ import { Button } from "../components";
 import axios from "axios";
 
 const Penyakit = () => {
-  // const url = "https://tubes-cocokgen.herokuapp.com/";
-  const url = "http://localhost:5000/";
+  // debugging purposes
+  // const url = "http://localhost:5000/";
+
+  const url = "https://tubes-cocokgen.herokuapp.com/";
 
   const [penyakit, setPenyakit] = useState([]);
   const [name, setName] = useState("");
   const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
-  const [isFileValid, setIsFileValid] = useState(false);
-  const [isAllFilled, setIsAllFilled] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -24,7 +24,8 @@ const Penyakit = () => {
         setPenyakit(result.data);
         setLoading(false);
       } catch (error) {
-        // setError(error);
+        setLoading(false);
+        setError(error.message);
       }
     };
     fetchData();
@@ -66,11 +67,9 @@ const Penyakit = () => {
         setName("");
         setDNA(null);
         setFilename("Tidak ada berkas yang dipilih");
-        setIsFileValid(false);
         fileInputRef.current.value = null;
       })
       .catch((err) => {
-        console.log(err.response.data);
         setError(err.response.data);
       });
   };

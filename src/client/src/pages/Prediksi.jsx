@@ -4,8 +4,10 @@ import { images } from "../constants";
 import axios from "axios";
 
 const Prediksi = () => {
-  // const url = "https://tubes-cocokgen.herokuapp.com/";
-  const url = "http://localhost:5000/";
+  // debugging purposes
+  // const url = "http://localhost:5000/";
+
+  const url = "https://tubes-cocokgen.herokuapp.com/";
 
   const [namaHasil, setNamaHasil] = useState("---");
   const [namaForm, setNamaForm] = useState("");
@@ -19,7 +21,7 @@ const Prediksi = () => {
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
   const penyakitInputRef = useRef(null);
-  const [error, setError] = useState([]);
+  const [error, setError] = useState("");
   
   useEffect(() => {
     axios.get(url + "penyakit")
@@ -49,18 +51,25 @@ const Prediksi = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
     const data = {
       namaPasien: namaForm,
       dnaPasien: DNA,
       penyakitPrediksi: penyakitForm,
     };
-    console.log(data);
+
     axios.post(url + "hasilprediksi/add", data)
     .then(res => {
+      setNamaForm("");
+      setPenyakitForm(listPenyakit[0]);
+      setDNA(null);
+      setFilename("Tidak ada berkas yang dipilih");
+      fileInputRef.current.value = null;
+      penyakitInputRef.current.value = listPenyakit[0];
+
       axios.get(url + "hasilprediksi/")
       .then(res => {
         const data = res.data;
-        console.log(data[data.length - 1]);
         setNamaHasil(data[data.length - 1].namaPasien);
         setTanggal(data[data.length - 1].tanggalPrediksi);
         setPenyakitHasil(data[data.length - 1].penyakitPrediksi);
@@ -72,16 +81,9 @@ const Prediksi = () => {
       });
     })
     .catch(err => {
-      console.log(err.response.data);
       setError(err.response.data);
     });
     
-    setNamaForm("");
-    setPenyakitForm(listPenyakit[0]);
-    setDNA(null);
-    setFilename("Tidak ada berkas yang dipilih");
-    fileInputRef.current.value = null;
-    penyakitInputRef.current.value = listPenyakit[0];
   };
 
   const getFormattedDate = (dateStr) => {
@@ -92,12 +94,14 @@ const Prediksi = () => {
   return (
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
       <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
+
         {/* FORM */}
         <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
           Tes DNA-mu!
         </h1>
         <form onSubmit={handleSubmit}>
-          {/* NAME */}
+
+          {/* NAME INPUT */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Nama
@@ -112,7 +116,7 @@ const Prediksi = () => {
             />
           </div>
 
-          {/* FILE DNA */}
+          {/* FILE DNA INPUT */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Berkas DNA
@@ -143,7 +147,7 @@ const Prediksi = () => {
             />
           </div>
 
-          {/* PENYAKIT/KELAINAN */}
+          {/* PENYAKIT/KELAINAN DROPDOWN INPUT */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Penyakit/Kelainan
@@ -169,13 +173,11 @@ const Prediksi = () => {
           <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} type="Submit">
             Lihat Hasil
           </Button>
-          {error && error.length > 0 && (
-          <div className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
-            {error.map((err) => (
-              <p key={err}>"*"+{err}</p>
-            ))}
-          </div>
-        )}
+          {error && (
+            <p className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
+              {error}
+            </p>
+          )}
         </form>
       </div>
 
