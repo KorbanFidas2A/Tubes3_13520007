@@ -24,8 +24,6 @@ router.route("/add").post((req, res) => {
   ) {
     res.status(400).json("*Tidak boleh ada yang kosong.");
   } else {
-    const tanggalPrediksi = new Date();
-    
     //get rantai DNA penyakitPrediksi from database
     const filter = { namaPenyakit: penyakitPrediksi };
     var rantai = "";
@@ -56,19 +54,20 @@ router.route("/add").post((req, res) => {
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
 
+        const tanggal = new Date().then((tanggalPrediksi) => {
+          const newHasilPrediksi = new HasilPrediksi({
+            tanggalPrediksi,
+            namaPasien,
+            penyakitPrediksi,
+            tingkatKemiripan,
+            statusTerprediksi,
+          });
 
-        const newHasilPrediksi = new HasilPrediksi({
-          tanggalPrediksi,
-          namaPasien,
-          penyakitPrediksi,
-          tingkatKemiripan,
-          statusTerprediksi,
+          newHasilPrediksi
+            .save()
+            .then(() => res.json("Hasil Prediksi added!"))
+            .catch((err) => res.status(400).json("Error: " + err));
         });
-
-        newHasilPrediksi
-          .save()
-          .then(() => res.json("Hasil Prediksi added!"))
-          .catch((err) => res.status(400).json("Error: " + err));
       }
     });
   }
