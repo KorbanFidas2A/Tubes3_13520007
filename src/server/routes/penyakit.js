@@ -1,5 +1,6 @@
 const router = require("express").Router();
 let Penyakit = require("../models/penyakit.model");
+let algo = require("./algo");
 
 router.route("/").get((req, res) => {
   Penyakit.find()
@@ -10,18 +11,24 @@ router.route("/").get((req, res) => {
 router.route("/add").post((req, res) => {
   const namaPenyakit = req.body.namaPenyakit;
   const rantaiDNA = req.body.rantaiDNA;
-  var status = true;
 
-  if (status) {
-    const newPenyakit = new Penyakit({
-      namaPenyakit,
-      rantaiDNA,
-    });
+  if (!namaPenyakit || !rantaiDNA) {
+    res.status(400).json("*Tidak boleh ada yang kosong.");
+  } else {
+    
+    if (algo.DNAValidation(rantaiDNA)) {
+      const newPenyakit = new Penyakit({
+        namaPenyakit,
+        rantaiDNA,
+      });
 
-    newPenyakit
-      .save()
-      .then(() => res.json("Penyakit added!"))
-      .catch((err) => res.status(400).json("*Penyakit sudah terdaftar"));
+      newPenyakit
+        .save()
+        .then(() => res.json("Penyakit added!"))
+        .catch((err) => res.status(400).json("*Penyakit sudah terdaftar."));
+    } else {
+      res.status(400).json("*Berkas DNA tidak valid.");
+    }
   }
 });
 
