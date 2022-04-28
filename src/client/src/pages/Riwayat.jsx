@@ -7,11 +7,13 @@ const Riwayat = () => {
   // const url = "http://localhost:5000/";
 
   const url = "https://tubes-cocokgen.herokuapp.com/";
+
   const tableHeader = ["Nama", "Tanggal Tes", "Penyakit/Kelainan", "Tingkat Kemiripan", "Hasil"];
   const [riwayat, setRiwayat] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     axios.get(url + "hasilprediksi")
       .then(res => {
         setRiwayat(res.data);
@@ -19,6 +21,7 @@ const Riwayat = () => {
       })
       .catch(err => {
         console.log(err);
+        setLoading(false);
       });
   }, []);
 
@@ -65,11 +68,11 @@ const Riwayat = () => {
       {/* TABLE */}
       <div className="flex flex-col">
         {/* TABLE HEADER */}
-        <div className="flex flex-row gap-[1rem] rounded-t-[0.5rem] bg-lightorange px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
+        <div className="flex flex-row gap-[0.5rem] lg:gap-[1rem] rounded-t-[0.5rem] bg-lightorange px-[0.667rem] py-[0.667rem] lg:py-[1.125rem] lg:px-[2.25rem]">
           {tableHeader.map((item, index) => (
             <p
               key={index}
-              className={`flex items-center justify-start text-[0.667rem] font-medium lg:text-[1.5rem]` + (index === 0 || index === 2 ? ` basis-3/12 ` : ` basis-2/12 `)}
+              className={`flex items-center justify-start text-[0.667rem] font-medium lg:text-[1.5rem] ` + (index === 0 || index === 2 ? ` break-all basis-2/12 lg:basis-3/12 ` : ` break-words basis-2/12 `)}
             >
               {item}
             </p>
@@ -94,19 +97,19 @@ const Riwayat = () => {
             riwayat.map((item, index) => (
               <div
                 key={item._id}
-                className="flex flex-row gap-[1rem] px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
+                className="flex flex-1 flex-row gap-[0.5rem] lg:gap-[1rem] px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
-                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="break-all basis-2/12 lg:basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.namaPasien}
                 </p>
-                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="break-all basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {getFormattedDate(item.tanggalPrediksi)}
                 </p>
-                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-2/12 lg:basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.penyakitPrediksi}
                 </p>
                 <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
-                  {item.tingkatKemiripan}%
+                  {item.tingkatKemiripan.toFixed(2)}%
                 </p>
                 <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.hasilPrediksi ? "POSITIF" : "NEGATIF"}
