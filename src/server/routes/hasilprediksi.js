@@ -24,6 +24,8 @@ router.route("/add").post((req, res) => {
   ) {
     res.status(400).json("*Tidak boleh ada yang kosong.");
   } else {
+    const tanggalPrediksi = new Date();
+    
     //get rantai DNA penyakitPrediksi from database
     const filter = { namaPenyakit: penyakitPrediksi };
     var rantai = "";
@@ -50,12 +52,11 @@ router.route("/add").post((req, res) => {
             result = true;
           }
         }
-        
+
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
 
-        var today = new Date();
-        const tanggalPrediksi = Date(today);
+
         const newHasilPrediksi = new HasilPrediksi({
           tanggalPrediksi,
           namaPasien,
