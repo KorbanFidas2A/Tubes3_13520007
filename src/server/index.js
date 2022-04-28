@@ -5,15 +5,6 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const app = express()
 const PORT = process.env.PORT || 5000
-const {
-  get_hasil_prediksi_by_tanggal_penyakit,
-  get_hasil_prediksi_by_penyakit,
-  get_hasil_prediksi_by_tanggal,
-  get_hasil_prediksi_by_name,
-  get_all_prediksi,
-} = require("./controllers/hasilPrediksi");
-
-
 
 //establishing connection
 
