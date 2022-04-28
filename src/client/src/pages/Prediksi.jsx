@@ -56,18 +56,9 @@ const Prediksi = () => {
     setError("");
 
     // membuat format data yang benar
-    const tanggal = new Date();
-    const tanggalBerformat =
-      tanggal.getDate() +
-      "/" +
-      (tanggal.getMonth() + 1 < 10 ? "0" : "") +
-      (tanggal.getMonth() + 1) +
-      "/" +
-      tanggal.getFullYear();
 
     // data yang akan dikirim ke backend
     const data = {
-      tanggalPrediksi: tanggalBerformat,
       namaPasien: namaForm,
       dnaPasien: DNA,
       penyakitPrediksi: penyakitForm,

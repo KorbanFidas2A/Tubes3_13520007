@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const hasilPrediksiSchema = new Schema({
   tanggalPrediksi: {
     type: String,
-    required: true,
+    required: true
   },
   namaPasien: {
     type: String,

@@ -25,7 +25,8 @@ router.route("/add").post((req, res) => {
   const namaPasien = req.body.namaPasien;
   const penyakitPrediksi = req.body.penyakitPrediksi;
   const dnaPasien = req.body.dnaPasien;
-  const tanggalPrediksi = req.body.tanggalPrediksi;
+  var date = new Date(Date.now());
+  var tanggalBerformat = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`
 
   //input validation checker
   if (
@@ -62,7 +63,7 @@ router.route("/add").post((req, res) => {
             result = true;
           }
         }
-
+        const tanggalPrediksi = tanggalBerformat
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
 

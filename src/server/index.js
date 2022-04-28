@@ -30,6 +30,8 @@ const penyakitRouter = require('./routes/penyakit')
 app.use('/hasilprediksi', hasilPrediksiRouter)
 app.use('/penyakit', penyakitRouter)
 
-
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+})
 // mongoose.set('useFindAndModify', false);
 
