@@ -14,6 +14,8 @@ router.route("/add").post((req, res) => {
   const namaPasien = req.body.namaPasien;
   const penyakitPrediksi = req.body.penyakitPrediksi;
   const dnaPasien = req.body.dnaPasien;
+  
+  const tanggalPrediksi = new Date();
 
   //input validation checker
   if (
@@ -54,7 +56,6 @@ router.route("/add").post((req, res) => {
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
 
-        const tanggalPrediksi = new Date();
 
         const newHasilPrediksi = new HasilPrediksi({
           tanggalPrediksi,
