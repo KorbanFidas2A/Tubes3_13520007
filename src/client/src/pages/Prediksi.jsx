@@ -19,24 +19,26 @@ const Prediksi = () => {
   const [hasil, setHasil] = useState("---");
   const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
+  const [error, setError] = useState("");
   const fileInputRef = useRef(null);
   const penyakitInputRef = useRef(null);
-  const [error, setError] = useState("");
-  
+
   useEffect(() => {
-    axios.get(url + "penyakit")
-    .then(res => {
+    axios.get(url + "penyakit").then((res) => {
       const data = res.data;
-      setListPenyakit(listPenyakit.concat(data.map(item => item.namaPenyakit)));
-    })
+      setListPenyakit(
+        listPenyakit.concat(data.map((item) => item.namaPenyakit))
+      );
+    });
   }, []);
 
-
+  /* TOMBOL UNGGAH BERKAS */
   const handleUploadFileButton = (e) => {
     e.preventDefault();
     fileInputRef.current.click();
   };
 
+  /* UNGGAH BERKAS */
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
 
@@ -48,59 +50,69 @@ const Prediksi = () => {
     reader.readAsText(file);
   };
 
-
+  /* SUBMIT DATA UNTUK DIPREDIKSI */
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
+
+    // membuat format data yang benar
+    const tanggal = new Date();
+    const tanggalBerformat =
+      tanggal.getDate() +
+      "/" +
+      (tanggal.getMonth() + 1 < 10 ? "0" : "") +
+      (tanggal.getMonth() + 1) +
+      "/" +
+      tanggal.getFullYear();
+
+    // data yang akan dikirim ke backend
     const data = {
+      tanggalPrediksi: tanggalBerformat,
       namaPasien: namaForm,
       dnaPasien: DNA,
       penyakitPrediksi: penyakitForm,
     };
 
-    axios.post(url + "hasilprediksi/add", data)
-    .then(res => {
-      setNamaForm("");
-      setPenyakitForm(listPenyakit[0]);
-      setDNA(null);
-      setFilename("Tidak ada berkas yang dipilih");
-      fileInputRef.current.value = null;
-      penyakitInputRef.current.value = listPenyakit[0];
+    // mengirim data ke backend
+    axios
+      .post(url + "hasilprediksi/add", data)
+      .then((res) => {
+        // setelah berhasil post, ubah semua state menjadi default
+        setNamaForm("");
+        setPenyakitForm(listPenyakit[0]);
+        setDNA(null);
+        setFilename("Tidak ada berkas yang dipilih");
+        fileInputRef.current.value = null;
+        penyakitInputRef.current.value = listPenyakit[0];
 
-      axios.get(url + "hasilprediksi/")
-      .then(res => {
-        const data = res.data;
-        setNamaHasil(data[data.length - 1].namaPasien);
-        setTanggal(data[data.length - 1].tanggalPrediksi);
-        setPenyakitHasil(data[data.length - 1].penyakitPrediksi);
-        setTingkatKemiripan(data[data.length - 1].tingkatKemiripan);
-        (data[data.length - 1].statusTerprediksi ? setHasil("POSITIF"): setHasil("NEGATIF"));
+        // mengambil kembali hasil prediksi dari backend
+        axios
+          .get(url + "hasilprediksi/")
+          .then((res) => {
+            const data = res.data[res.data.length - 1];
+            setNamaHasil(data.namaPasien);
+            setTanggal(data.tanggalPrediksi);
+            setPenyakitHasil(data.penyakitPrediksi);
+            setTingkatKemiripan(data.tingkatKemiripan);
+            data.statusTerprediksi ? setHasil("POSITIF") : setHasil("NEGATIF");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
-      .catch(err => {
-        console.log(err);
+      .catch((err) => {
+        setError(err.response.data);
       });
-    })
-    .catch(err => {
-      setError(err.response.data);
-    });
-    
   };
-
-  const getFormattedDate = (dateStr) => {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString();
-  }
 
   return (
     <div className="relative flex flex-col px-[1.75rem] pt-[4.5rem] pb-[3rem] lg:flex-row lg:px-[9.75rem] lg:pt-[10rem] lg:pb-[8.5rem]">
       <div className="mb-[3rem] basis-5/12 lg:mr-[7.5rem] lg:mb-[8.5rem]">
-
         {/* FORM */}
         <h1 className="mb-[1.5rem] text-[1.5rem] font-extrabold lg:mb-[3rem] lg:text-[2.25rem]">
           Tes DNA-mu!
         </h1>
         <form onSubmit={handleSubmit}>
-
           {/* NAME INPUT */}
           <div className="mb-[1.5rem] lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
@@ -121,9 +133,7 @@ const Prediksi = () => {
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">
               Berkas DNA
             </p>
-            <div
-              className="mb-[0.75rem] text-[0.668rem] font-medium lg:mb-[1.125rem] lg:text-[1rem] text-darkgrey"
-            >
+            <div className="mb-[0.75rem] text-[0.668rem] font-medium text-darkgrey lg:mb-[1.125rem] lg:text-[1rem]">
               <p>*Berkas yang diunggah harus berekstensi .txt</p>
               <p>*Berkas hanya berisi huruf A, C, G, dan/atau T</p>
               <p>*Tidak boleh ada enter, spasi, dan huruf kecil</p>
@@ -170,7 +180,10 @@ const Prediksi = () => {
             </select>
           </div>
 
-          <Button className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`} type="Submit">
+          <Button
+            className={`mb-[1rem]  px-[2.25rem] lg:px-[3.625rem]`}
+            type="Submit"
+          >
             Lihat Hasil
           </Button>
           {error && (
@@ -191,7 +204,7 @@ const Prediksi = () => {
             <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
               Nama
             </p>
-            <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
+            <p className="basis-1/2 break-all text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>{namaHasil}</i>
             </p>
           </div>
@@ -200,9 +213,7 @@ const Prediksi = () => {
               Tanggal Tes
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
-              <i>
-                {tanggal === "---" ? "---" : getFormattedDate(tanggal)}
-              </i>
+              <i>{tanggal === "---" ? "---" : tanggal}</i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">
@@ -217,7 +228,9 @@ const Prediksi = () => {
             <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
               Tingkat Kemiripan
             </p>
-            <p className={`basis-1/2 text-[1rem] lg:text-[1.5rem] text-darkgrey`}>
+            <p
+              className={`basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]`}
+            >
               <i>
                 {tingkatKemiripan} {tingkatKemiripan === "---" ? "" : "%"}
               </i>
@@ -227,10 +240,13 @@ const Prediksi = () => {
             <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
               Hasil
             </p>
-            <p className={`basis-1/2 text-[1rem] lg:text-[1.5rem] ` + (hasil === "---" ? "text-darkgrey" : "text-red")}>
-              <i>
-                {hasil}
-              </i>
+            <p
+              className={
+                `basis-1/2 text-[1rem] lg:text-[1.5rem] ` +
+                (hasil === "---" ? "text-darkgrey" : "text-red")
+              }
+            >
+              <i>{hasil}</i>
             </p>
           </div>
         </div>

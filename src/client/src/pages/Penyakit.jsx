@@ -31,16 +31,19 @@ const Penyakit = () => {
     fetchData();
   }, []);
 
+  /* DELETE PENYAKIT */
   const deletePenyakit = (namaPenyakit) => {
     axios.delete(url + "penyakit/delete/" + namaPenyakit);
     setPenyakit(penyakit.filter((el) => el.namaPenyakit !== namaPenyakit));
   };
 
+  /* TOMBOL UNGGAH BERKAS */
   const handleUploadFileButton = (e) => {
     e.preventDefault();
     fileInputRef.current.click();
   };
 
+  /* UNGGAH BERKAS */
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
 
@@ -52,18 +55,25 @@ const Penyakit = () => {
     reader.readAsText(file);
   };
 
+  /* SUBMIT DATA UNTUK MENAMBAH PENYAKIT */
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
+
+    // data yang akan dikirim ke backend
     const data = {
       namaPenyakit: name,
       rantaiDNA: DNA,
     };
 
+    // mengirim data ke backend
     axios
       .post(url + "penyakit/add", data)
       .then((res) => {
+        // menambahkan data baru ke list penyakit
         setPenyakit([...penyakit, data]);
+
+        // mengubah semua state menjadi default
         setName("");
         setDNA(null);
         setFilename("Tidak ada berkas yang dipilih");
@@ -81,6 +91,7 @@ const Penyakit = () => {
       </h1>
       <form className="mb-[3rem] lg:mb-[4.5rem]" onSubmit={handleSubmit}>
         <div className="flex flex-col lg:flex-row lg:gap-[7.5rem]">
+          
           {/* NAMA PENYAKIT */}
           <div className="mb-[1.5rem] basis-5/12 lg:mb-[3rem]">
             <p className="mb-[1rem] text-[1rem] font-medium lg:mb-[1.5rem] lg:text-[1.5rem]">

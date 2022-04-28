@@ -9,13 +9,23 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
+router.route("/riwayat").get((req, res) => {
+  const q = req.query.q;
+  const [tanggal, penyakit] = algo.queryExtract(q);
+  HasilPrediksi.find({
+    penyakitPrediksi: { $regex: penyakit, $options: "i" },
+    tanggalPrediksi: { $regex: tanggal, $options: "i" },
+  })
+    .then((hasilPencarian) => res.json(hasilPencarian))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
 router.route("/add").post((req, res) => {
   //get request from frontend
   const namaPasien = req.body.namaPasien;
   const penyakitPrediksi = req.body.penyakitPrediksi;
   const dnaPasien = req.body.dnaPasien;
-  
-  const tanggalPrediksi = new Date();
+  const tanggalPrediksi = req.body.tanggalPrediksi;
 
   //input validation checker
   if (
@@ -40,7 +50,7 @@ router.route("/add").post((req, res) => {
         //result
         var similarityLevel;
         var result;
-        
+
         var checking_result = algo.kmpMatch(dnaPasien, rantai);
         if (checking_result != -1) {
           result = true;
@@ -55,7 +65,6 @@ router.route("/add").post((req, res) => {
 
         const statusTerprediksi = Boolean(result);
         const tingkatKemiripan = similarityLevel;
-
 
         const newHasilPrediksi = new HasilPrediksi({
           tanggalPrediksi,
