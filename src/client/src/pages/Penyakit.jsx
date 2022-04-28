@@ -14,7 +14,7 @@ const Penyakit = () => {
   const [isFileValid, setIsFileValid] = useState(false);
   const [isAllFilled, setIsAllFilled] = useState(true);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,7 +32,7 @@ const Penyakit = () => {
 
   const deletePenyakit = (namaPenyakit) => {
     axios.delete(url + "penyakit/delete/" + namaPenyakit);
-    setPenyakit(penyakit.filter(el => el.namaPenyakit !== namaPenyakit));
+    setPenyakit(penyakit.filter((el) => el.namaPenyakit !== namaPenyakit));
   };
 
   const handleUploadFileButton = (e) => {
@@ -53,12 +53,15 @@ const Penyakit = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
     const data = {
       namaPenyakit: name,
       rantaiDNA: DNA,
     };
-    axios.post(url + "penyakit/add", data)
-      .then(res => {
+
+    axios
+      .post(url + "penyakit/add", data)
+      .then((res) => {
         setPenyakit([...penyakit, data]);
         setName("");
         setDNA(null);
@@ -66,8 +69,9 @@ const Penyakit = () => {
         setIsFileValid(false);
         fileInputRef.current.value = null;
       })
-      .catch(err => {
-        // setError(err);
+      .catch((err) => {
+        console.log(err.response.data);
+        setError(err.response.data);
       });
   };
 
@@ -129,12 +133,10 @@ const Penyakit = () => {
         >
           Tambahkan
         </Button>
-        {error && error.length > 0 && (
-          <div className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
-            {error.map((err) => (
-              <p key={err}>"*"+{err}</p>
-            ))}
-          </div>
+        {error && (
+          <p className="text-[0.667rem] font-medium text-red lg:text-[1rem]">
+            {error}
+          </p>
         )}
       </form>
 
