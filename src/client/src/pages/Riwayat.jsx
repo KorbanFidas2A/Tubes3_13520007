@@ -5,7 +5,7 @@ import axios from "axios";
 const Riwayat = () => {
   // const url = "https://tubes-cocokgen.herokuapp.com/";
   const url = "http://localhost:5000/";
-  const tableHeader = ["Nama", "Tanggal Tes", "Penyakit/Kelainan", "Hasil"];
+  const tableHeader = ["Nama", "Tanggal Tes", "Penyakit/Kelainan", "Tingkat Kemiripan", "Hasil"];
   const [riwayat, setRiwayat] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -67,7 +67,7 @@ const Riwayat = () => {
           {tableHeader.map((item, index) => (
             <p
               key={index}
-              className="flex-1 basis-1/4 text-[0.667rem] font-medium lg:text-[1.5rem]"
+              className={`flex items-center justify-start text-[0.667rem] font-medium lg:text-[1.5rem]` + (index === 0 || index === 3 ? ` basis-3/12 ` : ` basis-2/12 `)}
             >
               {item}
             </p>
@@ -94,16 +94,19 @@ const Riwayat = () => {
                 key={item._id}
                 className="flex flex-row gap-[1rem] px-[0.667rem] py-[0.25rem] lg:px-[2.25rem] lg:py-[1.25rem]"
               >
-                <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.namaPasien}
                 </p>
-                <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {getFormattedDate(item.tanggalPrediksi)}
                 </p>
-                <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.penyakitPrediksi}
                 </p>
-                <p className="basis-1/4 text-[0.667rem] lg:text-[1.25rem]">
+                <p className="basis-3/12 text-[0.667rem] lg:text-[1.25rem]">
+                  {item.tingkatKemiripan}%
+                </p>
+                <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
                   {item.hasilPrediksi ? "POSITIF" : "NEGATIF"}
                 </p>
                 <a

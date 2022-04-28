@@ -10,17 +10,15 @@ const Prediksi = () => {
   const [namaHasil, setNamaHasil] = useState("---");
   const [namaForm, setNamaForm] = useState("");
   const [tanggal, setTanggal] = useState("---");
-  const [hasil, setHasil] = useState("---");
-  const [hasilPrediksi, setHasilPrediksi] = useState(false);
   const [listPenyakit, setListPenyakit] = useState(["Pilih Penyakit/Kelainan"]);
   const [penyakitForm, setPenyakitForm] = useState(listPenyakit[0]);
   const [penyakitHasil, setPenyakitHasil] = useState("---");
+  const [tingkatKemiripan, setTingkatKemiripan] = useState("---");
+  const [hasil, setHasil] = useState("---");
   const [DNA, setDNA] = useState(null);
   const [filename, setFilename] = useState("Tidak ada berkas yang dipilih");
   const fileInputRef = useRef(null);
   const penyakitInputRef = useRef(null);
-  const [isFileValid, setIsFileValid] = useState(false);
-  const [isAllFilled, setIsAllFilled] = useState(true);
   const [error, setError] = useState([]);
   
   useEffect(() => {
@@ -56,6 +54,7 @@ const Prediksi = () => {
       dnaPasien: DNA,
       penyakitPrediksi: penyakitForm,
     };
+    console.log(data);
     axios.post(url + "hasilprediksi/add", data)
     .then(res => {
       axios.get(url + "hasilprediksi/")
@@ -65,7 +64,7 @@ const Prediksi = () => {
         setNamaHasil(data[data.length - 1].namaPasien);
         setTanggal(data[data.length - 1].tanggalPrediksi);
         setPenyakitHasil(data[data.length - 1].penyakitPrediksi);
-        setHasilPrediksi(data[data.length - 1].statusTerprediksi);
+        setTingkatKemiripan(data[data.length - 1].tingkatKemiripan);
         (data[data.length - 1].statusTerprediksi ? setHasil("POSITIF"): setHasil("NEGATIF"));
       })
       .catch(err => {
@@ -73,7 +72,8 @@ const Prediksi = () => {
       });
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.response.data);
+      setError(err.response.data);
     });
     
     setNamaForm("");
@@ -81,7 +81,7 @@ const Prediksi = () => {
     setDNA(null);
     setFilename("Tidak ada berkas yang dipilih");
     fileInputRef.current.value = null;
-    penyakitInputRef.current.value = null;
+    penyakitInputRef.current.value = listPenyakit[0];
   };
 
   const getFormattedDate = (dateStr) => {
@@ -209,6 +209,16 @@ const Prediksi = () => {
             </p>
             <p className="basis-1/2 text-[1rem] text-darkgrey lg:text-[1.5rem]">
               <i>{penyakitHasil}</i>
+            </p>
+          </div>
+          <div className="flex flex-1 flex-row">
+            <p className="basis-1/2 text-[1rem] font-semibold lg:text-[1.5rem]">
+              Tingkat Kemiripan
+            </p>
+            <p className={`basis-1/2 text-[1rem] lg:text-[1.5rem] text-darkgrey`}>
+              <i>
+                {tingkatKemiripan} {tingkatKemiripan === "---" ? "" : "%"}
+              </i>
             </p>
           </div>
           <div className="flex flex-1 flex-row">

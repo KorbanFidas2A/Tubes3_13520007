@@ -1,3 +1,8 @@
+function DNAValidation(DNA) {
+    let regex = /^[ATCG]*$/;
+    return regex.test(DNA);
+}
+
 // KMP algorithm, return index di mana pattern ditemukan jika pattern
 // ditemukan pada text, return -1 jika pattern tidak ditemukan
 function kmpMatch(text, pattern) {
@@ -128,6 +133,9 @@ function LCS(text, pattern) {
 }
 
 module.exports = {
+    DNAValidation: function(DNA) {
+        return DNAValidation(DNA);
+    },
     bmMatch: function(text, pattern) {
         return bmMatch(text, pattern);
     },
