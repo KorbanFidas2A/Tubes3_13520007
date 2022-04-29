@@ -1,6 +1,6 @@
 # DNA Pattern Matching Web Application
 > Tugas Besar 3 IF2211 Strategi Algoritma Semester II Tahun 2021/2022 by Kelompok 8 Regexerigo.
-> Web Application kami deploy ke [_tautan_](https://www.example.com) berikut. <!-- If you have the project hosted somewhere, include the link here. -->
+> Web Application kami deploy ke [_tautan_](https://cocokgen.netlify.app/) berikut.
 
 ## Table of Contents
 * [General Info](#general-information)
@@ -13,27 +13,30 @@
 
 
 ## General Information
-- Provide general information about your project here.
-- What problem does it (intend to) solve?
-- What is the purpose of your project?
-- Why did you undertake it?
+Program ini adalah web application untuk melakukan DNA pattern matching dengan suatu DNA sequence dari penyakit. Algoritma yang digunakan untuk pattern matching adalah algoritma Knutt-Morris-Pratt (KMP) dan menggunakan algoritma Longest Common Subsequence (LCS) untuk memberikan tingkat kemiripan pattern pada teks yang diuji.
+
 
 
 ## Technologies Used
-- Tech 1 - version 1.0
-- Tech 2 - version 2.0
-- Tech 3 - version 3.0
+- MongoDB
+- Express.js
+- React.js
+- Node.js 
+- Mongoose
 
 
 ## Features
-List the ready features here:
-- Awesome feature 1
-- Awesome feature 2
-- Awesome feature 3
+- Prediksi penyakit
+- Melihat, mencari, dan menghapus riwayat prediksi penyakit
+- Menambah dan menghapus data penyakit
 
 
 ## Screenshots
-![Example screenshot](./img/screenshot.png)
+![Beranda](./img/screenshot.png)
+![Prediksi](./img/screenshot.png)
+![Riwayat](./img/screenshot.png)
+![Penyakit](./img/screenshot.png)
+![Tentang](./img/screenshot.png)
 
 
 ## Setup
