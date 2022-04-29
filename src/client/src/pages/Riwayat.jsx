@@ -65,11 +65,11 @@ const Riwayat = () => {
     >
       {/* HEADER AND SEARCH BAR */}
       <div className="mb-[1.5rem] flex flex-col lg:mb-[5rem] lg:flex-row lg:gap-[1.5rem]">
-        <h1 className="mb-[1.5rem] basis-4/12 text-[1.5rem] font-extrabold lg:mb-0 lg:text-[2.25rem]">
+        <h1 className="flex flex-nowrap mb-[1.5rem] basis-4/12 text-[1.5rem] font-extrabold lg:mb-0 lg:text-[2.25rem]">
           Cari Riwayat Tes
         </h1>
-        <form onSubmit={handleSubmit} className="w-full">
-          <div className="flex basis-8/12 flex-nowrap justify-between gap-[0.5rem] lg:gap-[1.5rem]">
+        <form onSubmit={handleSubmit} className="basis-8/12 w-full">
+          <div className="flex flex-nowrap justify-between gap-[0.5rem] lg:gap-[1.5rem]">
             <input
               type="text"
               name="search"
