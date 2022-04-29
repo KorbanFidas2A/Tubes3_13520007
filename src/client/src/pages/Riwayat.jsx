@@ -139,7 +139,7 @@ const Riwayat = () => {
                     {item.tingkatKemiripan.toFixed(2)}%
                   </p>
                   <p className="basis-2/12 text-[0.667rem] lg:text-[1.25rem]">
-                    {item.hasilPrediksi ? "POSITIF" : "NEGATIF"}
+                    {item.statusTerprediksi ? "POSITIF" : "NEGATIF"}
                   </p>
                   <a
                     className="text-[0.667rem] underline hover:cursor-pointer lg:text-[1.25rem]"
