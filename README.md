@@ -7,8 +7,10 @@
 * [Technologies Used](#technologies-used)
 * [Features](#features)
 * [Screenshots](#screenshots)
-* [Setup](#setup)
-* [Usage](#usage)
+* [Backend Setup](#backend-setup)
+* [Frontend Setup](#frontend-setup)
+* [Local Usage](#local-usage)
+* [Remote Usage](#remote-usage)
 * [Contributors](#contributors)
 
 
@@ -31,25 +33,33 @@ Program ini adalah web application untuk melakukan DNA pattern matching dengan s
 - Menambah dan menghapus data penyakit
 
 
-## Screenshots
-![Beranda](./img/screenshot.png)
-![Prediksi](./img/screenshot.png)
-![Riwayat](./img/screenshot.png)
-![Penyakit](./img/screenshot.png)
-![Tentang](./img/screenshot.png)
+## Backend Setup
+1. Pastikan sudah install Node.js di perangkat anda.
+2. Install nodemon package dengan menulis `npm install -g nodemon` di command prompt.
+3. Buat file `.env` di directory saat ini dan salin kode berikut ke dalamnya.
+```
+ATLAS_URI=mongodb+srv://tubes3stima:initubesbersama@tubesstima3.wccx3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority
+```
+4. Buka kembali command prompt sebelumnya dan jalankan `nodemon index`.
+5. Biarkan backend berjalan dan jangan tutup command prompt hingga anda selesai menggunakan program.
 
+## Frontend Setup
+1. Pastikan sudah install Node.js di perangkat anda.
+2. Install vite package dengan menulis `npm install vite` di command prompt.
+3. Jalankan `npm run dev` dan salin link Local yang diberikan, anda juga dapat menggunakan link Network pada perangkat lain yang terjaring menggunakan WiFi yang sama.
+4. Biarkan frontend berjalan dan jangan tutup command prompt hingga anda selesai menggunakan program.
 
-## Setup
-What are the project requirements/dependencies? Where are they listed? A requirements.txt or a Pipfile.lock file perhaps? Where is it located?
+## Local Usage
+1. Download repository ini dalam bentuk zip dan extract.
+2. Buka command prompt di directory repository yang sudah di-extract.
+3. Change directory ke `..\src\server` dan jalankan [Backend Setup](#backend-setup).
+4. Buka command prompt baru di directory repository yang sudah di-extract.
+5. Change directory ke `..\src\client` dan jalankan [Frontend Setup](#frontend-setup).
+6. Web Application dapat digunakan untuk melakukan pattern matching prediksi penyakit dan mencari riwayat prediksi.
 
-Proceed to describe how to install / setup one's local environment / get started with the project.
-
-
-## Usage
-How does one go about using it?
-Provide various use cases and code examples here.
-
-`write-your-code-here`
+## Remote Usage
+1. Buka Web Application yang telah kami deploy ke [_tautan_](https://cocokgen.netlify.app/) berikut.
+2. Web Application dapat digunakan untuk melakukan pattern matching prediksi penyakit dan mencari riwayat prediksi.
 
 ## Contributors
 - [Nadia Mareta Putri Leiden | 13520007 | K01](https://github.com/KorbanFidas2A)
