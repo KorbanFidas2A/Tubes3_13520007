@@ -25,8 +25,14 @@ router.route("/add").post((req, res) => {
   const namaPasien = req.body.namaPasien;
   const penyakitPrediksi = req.body.penyakitPrediksi;
   const dnaPasien = req.body.dnaPasien;
-  var date = new Date(Date.now());
-  var tanggalBerformat = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`
+  const tanggal = new Date();
+  const tanggalBerformat =
+    tanggal.getDate() +
+    "/" +
+    (tanggal.getMonth() + 1 < 10 ? "0" : "") +
+    (tanggal.getMonth() + 1) +
+    "/" +
+    tanggal.getFullYear();
 
   //input validation checker
   if (
